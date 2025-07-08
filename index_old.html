@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Bloques Editables</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🏥 Gestión de Ingresos y Controles</h1>
+            <p>Selecciona el tipo de cada bloque y gestiona los ingresos y controles</p>
+            <div class="controls">
+                <button id="clearAll" class="clear-btn">🗑️ Limpiar Todo</button>
+                <button id="exportData" class="export-btn">📥 Exportar</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+                <button id="importData" class="import-btn">📤 Importar</button>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="blocks-grid">
+<div class="column">
+    <h2>Torre Nueva A</h2>
+    <div class="group">
+        <!-- Generar 18 salas de 3 pacientes cada una para Torre Nueva A -->
+        <!-- Ejemplo de una sala en Torre Nueva A -->
+        <div class="room">
+            <div class="block-container" id="tna-room-1" data-type="empty">
+                <div class="block-header">
+                    <h3>Sala 1</h3>
+                    <span class="save-indicator" id="tna-indicator-1">💾</span>
+                </div>
+                <div class="block-content" id="tna-block-1">
+                    <div class="option-selector" id="tna-selector-1">
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tna-type-1" value="empty" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Vacía
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tna-type-1" value="ingreso" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Ingreso Asignado
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tna-type-1" value="control" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Control
+                        </label>
+                    </div>
+                    <div class="content-area" id="tna-content-1"></div>
+                </div>
+            </div>
+            <!-- Repetir el bloque anterior para más salas -->
+        </div>
+    </div>
+</div>
+
+<div class="column">
+    <h2>Torre Nueva B</h2>
+    <div class="group">
+        <!-- Generar 18 salas de 3 pacientes cada una para Torre Nueva B -->
+        <div class="room">
+            <div class="block-container" id="tnb-room-1" data-type="empty">
+                <div class="block-header">
+                    <h3>Sala 1</h3>
+                    <span class="save-indicator" id="tnb-indicator-1">💾</span>
+                </div>
+                <div class="block-content" id="tnb-block-1">
+                    <div class="option-selector" id="tnb-selector-1">
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tnb-type-1" value="empty" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Vacía
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tnb-type-1" value="ingreso" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Ingreso Asignado
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="tnb-type-1" value="control" data-block="1">
+                            <span class="checkbox-custom"></span>
+                            Control
+                        </label>
+                    </div>
+                    <div class="content-area" id="tnb-content-1"></div>
+                </div>
+            </div>
+            <!-- Repetir el bloque anterior para más salas -->
+        </div>
+    </div>
+</div>
+
+<div class="column">
+    <h2>EP</h2>
+    <div class="group">
+        <!-- Generar 5 salas de 4 camas cada una para EP -->
+        <div class="room">
+            <div class="block-container" id="ep-room-595" data-type="empty">
+                <div class="block-header">
+                    <h3>Sala 595</h3>
+                    <span class="save-indicator" id="ep-indicator-595">💾</span>
+                </div>
+                <div class="block-content" id="ep-block-595">
+                    <div class="option-selector" id="ep-selector-595">
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="ep-type-595" value="empty" data-block="595">
+                            <span class="checkbox-custom"></span>
+                            Vacía
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="ep-type-595" value="ingreso" data-block="595">
+                            <span class="checkbox-custom"></span>
+                            Ingreso Asignado
+                        </label>
+                        <label class="option-checkbox">
+                            <input type="checkbox" name="ep-type-595" value="control" data-block="595">
+                            <span class="checkbox-custom"></span>
+                            Control
+                        </label>
+                    </div>
+                    <div class="content-area" id="ep-content-595"></div>
+                </div>
+            </div>
+            <!-- Repetir el bloque anterior para más salas (596-599) -->
+        </div>
+    </div>
+</div>
+
+                <div class="block-container" id="container-4" data-type="empty">
+                    <div class="block-header">
+                        <h3>Bloque 4</h3>
+                        <span class="save-indicator" id="indicator-4">💾</span>
+                    </div>
+                    <div class="block-content" id="block-4">
+                        <div class="option-selector" id="selector-4">
+                            <label class="option-checkbox">
+                                <input type="checkbox" name="type-4" value="empty" data-block="4">
+                                <span class="checkbox-custom"></span>
+                                Vacía
+                            </label>
+                            <label class="option-checkbox">
+                                <input type="checkbox" name="type-4" value="ingreso" data-block="4">
+                                <span class="checkbox-custom"></span>
+                                Ingreso Asignado
+                            </label>
+                            <label class="option-checkbox">
+                                <input type="checkbox" name="type-4" value="control" data-block="4">
+                                <span class="checkbox-custom"></span>
+                                Control
+                            </label>
+                        </div>
+                        <div class="content-area" id="content-4"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>💡 Tu contenido se guarda automáticamente mientras escribes</p>
+            <p>🔒 Los datos se almacenan localmente en tu navegador</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

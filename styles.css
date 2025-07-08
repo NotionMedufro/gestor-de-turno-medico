@@ -1,26 +1,542 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     color: #333;
     background-color: #f4f4f9;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+/* Filtros de estado */
+.filter-tags {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tag {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 15px;
+    border: 2px solid #e9ecef;
+    background: white;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+.filter-tag:hover {
+    transform: scale(1.05);
+}
+
+.filter-tag.active {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.filter-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.filter-tag.active .filter-count {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Colores específicos para filtros */
+.filter-tag.filter-ocupadas {
+    background: #8e44ad;
+    border-color: #8e44ad;
+    color: white;
+}
+
+.filter-tag.filter-empty {
+    background: #f5f5f5;
+    border-color: #333;
+    color: #333;
+}
+
+.filter-tag.filter-empty.active {
+    background: #333;
+    color: white;
+}
+
+.filter-tag.filter-asignadas {
+    background: #ff9800;
+    border-color: #ff9800;
+    color: white;
+}
+
+.filter-tag.filter-pendiente {
+    background: #fff3e0;
+    border-color: #ff9800;
+    color: #ff9800;
+}
+
+.filter-tag.filter-pendiente.active {
+    background: #ff9800;
+    color: white;
+}
+
+.filter-tag.filter-llego {
+    background: #ffebee;
+    border-color: #f44336;
+    color: #f44336;
+}
+
+.filter-tag.filter-llego.active {
+    background: #f44336;
+    color: white;
+}
+
+.filter-tag.filter-listo {
+    background: #e8f5e8;
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.filter-tag.filter-listo.active {
+    background: #4caf50;
+    color: white;
+}
+
+.filter-tag.filter-control {
+    background: #ffeef8;
+    border-color: #ff1493;
+    color: #ff1493;
+}
+
+.filter-tag.filter-control.active {
+    background: #ff1493;
+    color: white;
+}
+
+/* Indicador de filtro de encargado horizontal */
+.encargado-filter-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filtro-encargado-indicador-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #e8f4f8;
+    border: 1px solid #17a2b8;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: #17a2b8;
+}
+
+.filtro-text {
+    font-size: 12px;
+}
+
+.clear-filter-btn-small {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 9px;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-filter-btn-small:hover {
+    background: #138496;
+}
+
+/* Mantener estilos anteriores para compatibilidad */
+.filtro-encargado-indicador {
+    background: #e3f2fd;
+    border: 1px solid #2196f3;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #1976d2;
+}
+
+.filtro-encargado-indicador p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.clear-filter-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.clear-filter-btn:hover {
+    background: #c82333;
+}
+
+/* Filtro por Encargado */
+.encargado-filter-section {
+    position: relative;
+    display: inline-block;
+    margin: 10px 0;
+}
+
+.filter-encargado {
+    background: #e8f4f8;
+    border-color: #17a2b8;
+    color: #17a2b8;
+    position: relative;
+}
+
+.filter-encargado:hover {
+    background: #17a2b8;
+    color: white;
+}
+
+.filter-encargado.active {
+    background: #17a2b8;
+    color: white;
+}
+
+.filter-arrow {
+    margin-left: 5px;
+    font-size: 10px;
+    transition: transform 0.3s ease;
+}
+
+.filter-encargado.active .filter-arrow {
+    transform: rotate(180deg);
+}
+
+.encargado-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 250px;
+    z-index: 1000;
+    padding: 8px 0;
+}
+
+.encargado-options {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.encargado-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 14px;
+}
+
+.encargado-option:hover {
+    background: #f8f9fa;
+}
+
+.encargado-option.selected {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.encargado-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.encargado-circle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: bold;
+    color: #495057;
+}
+
+.encargado-circle.interno {
+    border: none;
+    background: #007bff;
+    color: white;
+}
+
+.encargado-circle.becado {
+    border: none;
+    background: #dc3545;
+    color: white;
+}
+
+.encargado-foto {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+}
+
+.action-btn.photo {
+    color: #28a745;
+}
+
+.action-btn.photo:hover {
+    background: #d4edda;
+}
+
+.encargado-count {
+    font-size: 12px;
+    color: #6c757d;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.dropdown-separator {
+    border: none;
+    border-top: 1px solid #dee2e6;
+    margin: 8px 0;
+}
+
+.encargado-management {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #f8f9fa;
+}
+
+.mini-input {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.mini-select {
+    padding: 4px 6px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 12px;
+    background: white;
+}
+
+.mini-btn {
+    padding: 4px 8px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.mini-btn:hover {
+    background: #218838;
+}
+
+.encargado-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.action-btn.edit {
+    color: #007bff;
+}
+
+.action-btn.edit:hover {
+    background: #e3f2fd;
+}
+
+.action-btn.delete {
+    color: #dc3545;
+}
+
+.action-btn.delete:hover {
+    background: #f8d7da;
+}
+
+/* Selector de encargado en camas - círculo arriba a la derecha */
+.encargado-selector {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
+.encargado-circle-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #dee2e6;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #495057;
+    position: relative;
+}
+
+.encargado-circle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.encargado-circle-btn.selected {
+    color: white;
+}
+
+.encargado-circle-btn.selected.interno {
+    border: none;
+    background: #007bff;
+    color: white;
+}
+
+.encargado-circle-btn.selected.becado {
+    border: none;
+    background: #dc3545;
+    color: white;
+}
+
+.encargado-circle-btn.none {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+    font-size: 12px;
+}
+
+.encargado-dropdown-mini {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    padding: 4px 0;
+    display: none;
+}
+
+.encargado-option-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 12px;
+}
+
+.encargado-option-mini:hover {
+    background: #f8f9fa;
+}
+
+.encargado-option-mini.selected {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+/* Grupo de filtros Asignadas */
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff3e0;
+    border: 2px solid #ff9800;
+    border-radius: 25px;
+    padding: 5px;
+}
+
+/* Grupo de filtros Ocupadas */
+.filter-group-ocupadas {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #ffeef8;
+    border: 2px solid #ff1493;
+    border-radius: 25px;
+    padding: 5px;
+}
+
+.sub-filters {
+    display: flex;
+    gap: 3px;
+}
+
+.sub-filters .filter-tag {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 15px;
 }
 
 h1 {
     font-size: 2.5rem;
     margin: 0 0 10px;
+    color: #2c3e50;
 }
 
 .main {
@@ -28,54 +544,395 @@ h1 {
     gap: 20px;
 }
 
-.blocks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+/* Layout de torres */
+.towers-grid {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
 }
 
+.towers-grid:not(.expanded) .tower {
+    flex: 1;
+}
+
+.tower {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+}
+
+.tower h2 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.tower-title {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.tower-title:hover {
+    color: #3498db;
+    transform: scale(1.02);
+}
+
+/* Estados de expansión */
+.towers-grid.expanded {
+    gap: 10px;
+}
+
+.towers-grid.expanded .tower.expanded {
+    flex: 4;
+    min-width: 0;
+}
+
+.towers-grid.expanded .tower.collapsed {
+    flex: 0 0 80px;
+    width: 80px;
+    overflow: hidden;
+    padding: 10px 5px;
+    min-width: 80px;
+}
+
+.towers-grid.expanded .tower.collapsed .rooms-grid {
+    display: none;
+}
+
+.towers-grid.expanded .tower.collapsed .tower-title {
+    font-size: 0.9rem;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    margin: 0;
+    padding: 10px 0;
+    border: none;
+    white-space: nowrap;
+}
+
+.towers-grid.expanded .tower.collapsed .tower-summary {
+    display: block !important;
+}
+
+/* Resumen de torre colapsada */
+.tower-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 10px;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    border-radius: 3px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.summary-item.empty { background: #f5f5f5; color: #333; }
+.summary-item.asignado { background: #fff3e0; color: #ff9800; }
+.summary-item.llego { background: #ffebee; color: #f44336; }
+.summary-item.listo { background: #e8f5e8; color: #4caf50; }
+.summary-item.control { background: #ffeef8; color: #ff1493; }
+
+/* Layout expandido - salas en vertical, camas en horizontal */
+.towers-grid.expanded .tower.expanded .rooms-grid {
+    display: block;
+}
+
+.towers-grid.expanded .tower.expanded .room-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+    align-items: stretch;
+}
+
+.towers-grid.expanded .tower.expanded .room-row .block-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Grid de salas dentro de cada torre */
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 6px;
+}
+
+/* Bloques más pequeños */
 .block-container {
     background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    border-left: 3px solid #9b59b6;
+    transition: all 0.3s ease;
+    min-height: 80px;
+}
+
+
+/* Estados específicos de los bloques */
+.block-container[data-type="empty"] {
+    background: #fff;
+    border-left-color: #ddd;
+}
+
+.block-container[data-type="ingreso"] {
+    background: #fff;
+    border-left-color: #e74c3c;
+}
+
+.block-container[data-type="control"] {
+    background: #ffeef8;
+    border-left-color: #ff1493;
+}
+
+/* Nuevos estados de colores */
+.block-container.state-empty {
+    background: #f5f5f5;
+    border-left-color: #333;
+}
+
+.block-container.state-asignado {
+    background: #fff3e0;
+    border-left-color: #ff9800;
+}
+
+.block-container.state-llego {
+    background: #ffebee;
+    border-left-color: #f44336;
+}
+
+.block-container.state-listo {
+    background: #e8f5e8;
+    border-left-color: #4caf50;
+}
+
+.block-container.state-control {
+    background: #ffeef8;
+    border-left-color: #ff1493;
 }
 
 .block-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 4px;
+    position: relative;
 }
 
-.editable-block {
-    height: 150px;
-    overflow-y: auto;
-    padding: 10px;
-    margin-top: 10px;
-    border: 1px dashed #ccc;
-    border-radius: 5px;
-    background-color: #fafafa;
+.block-header h3 {
+    position: absolute;
+    left: 0;
+    margin: 0;
+    font-size: 0.95rem;
+    color: #2c3e50;
+    font-weight: 600;
 }
 
-.editable-block:empty:before {
-    content: attr(data-placeholder);
-    color: #888;
+.save-indicator {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 40px;
+/* Selector de opciones */
+.option-selector {
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.option-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+    font-weight: 500;
+    font-size: 11px;
+    justify-content: center;
+    flex: 1;
+    min-width: 45px;
+}
+
+.option-checkbox:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.option-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    margin-right: 4px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.option-checkbox input[type="checkbox"]:checked + .checkbox-custom {
+    border-color: #3498db;
+    background-color: #3498db;
+}
+
+.option-checkbox input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 2px;
+    width: 3px;
+    height: 5px;
+    border: solid white;
+    border-width: 0 1px 1px 0;
+    transform: rotate(45deg);
+}
+
+/* Área de contenido */
+.content-area {
+    min-height: 30px;
+    font-size: 12px;
+}
+
+/* Formularios de ingreso y control */
+.form-container {
+    background: #f8f9fa;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.form-group {
+    margin-bottom: 3px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 2px;
+    font-weight: 500;
+    color: #495057;
+    font-size: 11px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 4px 6px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 11px;
+    transition: border-color 0.3s ease;
+}
+
+.compact-input {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Campo de enlace con botón */
+.link-group {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.link-input {
+    flex: 1;
+}
+
+.open-link-btn {
+    padding: 4px 6px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 8px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    min-width: 20px;
+}
+
+.open-link-btn:hover {
+    background-color: #218838;
+}
+
+.open-link-btn:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Botones de estado para ingresos */
+.status-buttons {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+}
+
+.status-btn {
+    flex: 1;
+    padding: 3px 6px;
+    border: 1px solid #ddd;
+    background: white;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 8px;
+    transition: all 0.3s ease;
+}
+
+.status-btn.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+}
+
+.status-btn:hover {
+    border-color: #3498db;
+}
+
+
+
+/* Controles principales */
+.controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    opacity: 0.8;
 }
 
 .clear-btn, .export-btn, .import-btn {
     margin-right: 10px;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     background-color: #007bff;
     color: white;
     font-weight: 500;
+    transition: background-color 0.3s ease;
 }
 
 .clear-btn:hover, .export-btn:hover, .import-btn:hover {
@@ -87,6 +944,106 @@ h1 {
     pointer-events: none;
 }
 
-.save-indicator {
-    margin-left: 10px;
+/* Botón minimalista de limpiar */
+.clear-btn-minimal {
+    padding: 8px 12px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.clear-btn-minimal:hover {
+    background-color: #e9ecef;
+    color: #495057;
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.clear-btn-minimal:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .towers-grid:not(.expanded) {
+        flex-direction: column;
+    }
+    
+    .towers-grid:not(.expanded) .tower {
+        flex: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .towers-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .towers-grid.expanded {
+        flex-direction: column;
+    }
+    
+    .towers-grid.expanded .tower.collapsed {
+        flex: none;
+        width: auto;
+        height: 60px;
+    }
+    
+    .towers-grid.expanded .tower.collapsed .tower-title {
+        writing-mode: initial;
+        text-orientation: initial;
+    }
+    
+    .tower {
+        padding: 15px;
+    }
+    
+    .rooms-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 8px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .status-buttons {
+        flex-direction: column;
+    }
+    
+    .link-group {
+        flex-direction: column;
+    }
+    
+    .link-input {
+        margin-bottom: 10px;
+    }
+    
+    .option-selector {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .option-checkbox {
+        min-width: auto;
+        justify-content: flex-start;
+    }
 }

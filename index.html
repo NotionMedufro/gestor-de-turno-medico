@@ -3,75 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Bloques Editables</title>
+    <title>Gestión Hospitalaria - Torres y Salas</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' stroke='%23007bff'><path d='M18 10h1.5a2.5 2.5 0 0 1 0 5H18m0-5c0-.53-.36-1-.923-1H4.923A.923.923 0 0 0 4 9.923V17a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-2m0-5v5M16 3l-2 3m-1-3-2 3m-1-3L8 6'/></svg>">
+    <style>
+        body.hidden {
+            display: none;
+        }
+        
+        /* Estilos del header */
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+        
+        .header-content h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            line-height: 1.2;
+            text-transform: uppercase;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+            text-align: center;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Widget lateral */
+        .image-widget {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .image-widget.open {
+            right: 0;
+        }
+        
+        .widget-toggle {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 18px 12px;
+            border-radius: 12px 0 0 12px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: -3px 0 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .widget-toggle:hover {
+            background: #0056b3;
+            transform: translateY(-50%) translateX(-2px);
+        }
+        
+        .widget-toggle.open {
+            right: 350px;
+        }
+        
+        .widget-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .widget-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+        }
+        
+        .widget-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .upload-section {
+            margin-bottom: 30px;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: #f9f9f9;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #007bff;
+        }
+        
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .qr-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .qr-code {
+            margin: 15px 0;
+        }
+        
+        .image-preview {
+            margin-top: 20px;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+    </style>
 </head>
-<body>
+<body class="hidden">
     <div class="container">
         <header class="header">
-            <h1>📝 Página de Bloques Editables</h1>
-            <p>Escribe en cualquier bloque - tu contenido se guarda automáticamente</p>
+            <div class="header-content">
+                <h1><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" style="vertical-align: middle; margin-right: 8px;"><path d='M18 10h1.5a2.5 2.5 0 0 1 0 5H18m0-5c0-.53-.36-1-.923-1H4.923A.923.923 0 0 0 4 9.923V17a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4v-2m0-5v5M16 3l-2 3m-1-3-2 3m-1-3L8 6'/></svg>Gestor de Turno Médico:</h1>
+                <p class="subtitle">Distribución y seguimiento de ingresos y controles del turno médico</p>
+            </div>
+            
+            <!-- Filtros por estado -->
+            <div class="filter-tags">
+                <button class="filter-tag active" data-filter="all" id="filter-all">
+                    Todas <span class="filter-count" id="count-all">0</span>
+                </button>
+                <button class="filter-tag filter-empty" data-filter="empty" id="filter-empty">
+                    Vacías <span class="filter-count" id="count-empty">0</span>
+                </button>
+                <div class="filter-group">
+                    <button class="filter-tag filter-asignadas" data-filter="asignadas-all" id="filter-asignadas">
+                        Asignadas <span class="filter-count" id="count-asignadas">0</span>
+                    </button>
+                    <div class="sub-filters">
+                        <button class="filter-tag filter-pendiente" data-filter="pendiente" id="filter-pendiente">
+                            Pendiente <span class="filter-count" id="count-pendiente">0</span>
+                        </button>
+                        <button class="filter-tag filter-llego" data-filter="llego" id="filter-llego">
+                            Llegó <span class="filter-count" id="count-llego">0</span>
+                        </button>
+                        <button class="filter-tag filter-listo" data-filter="listo" id="filter-listo">
+                            Listo <span class="filter-count" id="count-listo">0</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="filter-group-ocupadas">
+                    <button class="filter-tag filter-ocupadas" data-filter="ocupadas" id="filter-ocupadas">
+                        Ocupadas <span class="filter-count" id="count-ocupadas">0</span>
+                    </button>
+                    <div class="sub-filters">
+                        <button class="filter-tag filter-control" data-filter="control" id="filter-control">
+                            Control <span class="filter-count" id="count-control">0</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filtro por Encargado con indicador horizontal -->
+            <div class="encargado-filter-section">
+                <div class="encargado-filter-horizontal">
+                    <button class="filter-tag filter-encargado" id="filter-encargado">
+                        Por Encargado <span class="filter-arrow">▼</span>
+                    </button>
+                    <div id="filtro-encargado-actual" class="filtro-encargado-indicador-horizontal" style="display: none;">
+                        <span id="nombre-encargado-actual"></span>
+                        <button onclick="ingresoManager.clearEncargadoFilter()" class="clear-filter-btn-small" title="Limpiar filtro">✕</button>
+                    </div>
+                </div>
+                <div class="encargado-dropdown" id="encargadoDropdown" style="display: none;">
+                    <div class="encargado-options" id="encargadoOptions"></div>
+                    <hr class="dropdown-separator">
+                    <div class="encargado-management">
+                        <input type="text" id="nuevoEncargado" placeholder="Nombre" class="mini-input">
+                        <select id="tipoEncargado" class="mini-select">
+                            <option value="interno">Interno</option>
+                            <option value="becado">Becado</option>
+                        </select>
+                        <button id="addEncargado" class="mini-btn">➕</button>
+                    </div>
+                </div>
+            </div>
+            
             <div class="controls">
-                <button id="clearAll" class="clear-btn">🗑️ Limpiar Todo</button>
-                <button id="exportData" class="export-btn">📥 Exportar</button>
-                <input type="file" id="importFile" accept=".json" style="display: none;">
-                <button id="importData" class="import-btn">📤 Importar</button>
+                <button id="clearAll" class="clear-btn-minimal">🗑️</button>
             </div>
         </header>
 
         <main class="main">
-            <div class="blocks-grid">
-                <div class="block-container">
-                    <div class="block-header">
-                        <h3>Bloque 1</h3>
-                        <span class="save-indicator" id="indicator-1">💾</span>
-                    </div>
-                    <div 
-                        class="editable-block" 
-                        id="block-1" 
-                        contenteditable="true" 
-                        data-placeholder="Escribe aquí tu contenido para el bloque 1..."
-                    ></div>
+            <div class="towers-grid">
+                <!-- Torre Nueva A -->
+                <div class="tower" id="tower-container-a">
+                    <h2 class="tower-title" data-tower="tower-a">Torre Nueva A</h2>
+                    <div class="tower-summary" id="summary-tower-a" style="display: none;"></div>
+                    <div class="rooms-grid" id="tower-a"></div>
                 </div>
-
-                <div class="block-container">
-                    <div class="block-header">
-                        <h3>Bloque 2</h3>
-                        <span class="save-indicator" id="indicator-2">💾</span>
-                    </div>
-                    <div 
-                        class="editable-block" 
-                        id="block-2" 
-                        contenteditable="true" 
-                        data-placeholder="Escribe aquí tu contenido para el bloque 2..."
-                    ></div>
+                
+                <!-- Torre Nueva B -->
+                <div class="tower" id="tower-container-b">
+                    <h2 class="tower-title" data-tower="tower-b">Torre Nueva B</h2>
+                    <div class="tower-summary" id="summary-tower-b" style="display: none;"></div>
+                    <div class="rooms-grid" id="tower-b"></div>
                 </div>
-
-                <div class="block-container">
-                    <div class="block-header">
-                        <h3>Bloque 3</h3>
-                        <span class="save-indicator" id="indicator-3">💾</span>
-                    </div>
-                    <div 
-                        class="editable-block" 
-                        id="block-3" 
-                        contenteditable="true" 
-                        data-placeholder="Escribe aquí tu contenido para el bloque 3..."
-                    ></div>
-                </div>
-
-                <div class="block-container">
-                    <div class="block-header">
-                        <h3>Bloque 4</h3>
-                        <span class="save-indicator" id="indicator-4">💾</span>
-                    </div>
-                    <div 
-                        class="editable-block" 
-                        id="block-4" 
-                        contenteditable="true" 
-                        data-placeholder="Escribe aquí tu contenido para el bloque 4..."
-                    ></div>
+                
+                <!-- EP -->
+                <div class="tower" id="tower-container-ep">
+                    <h2 class="tower-title" data-tower="tower-ep">EP</h2>
+                    <div class="tower-summary" id="summary-tower-ep" style="display: none;"></div>
+                    <div class="rooms-grid" id="tower-ep"></div>
                 </div>
             </div>
         </main>
@@ -81,7 +278,173 @@
             <p>🔒 Los datos se almacenan localmente en tu navegador</p>
         </footer>
     </div>
+    
+    <!-- Footer -->
+    <footer style="text-align: center; margin-top: 8px; margin-bottom: 16px; padding-bottom: 12px;">
+        <img id="footerIcon" src="rapido-pulgoso-icon.png" alt="Rápido & Pulgoso" style="width:40px; vertical-align: middle; cursor: pointer;" title="Así como que rápido no sé...">
+        <span style="margin-left: 10px; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; font-weight: 300; letter-spacing: 3px; color: #666; font-size: 14px; text-transform: uppercase;">rápido & pulgoso inc. 2025</span>
+    </footer>
+    
+    <!-- Widget lateral para imágenes -->
+    <button class="widget-toggle" id="widget-toggle" onclick="toggleWidget()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor">
+            <path d='M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z'/>
+            <path d='M17 7h-3v5h3zm-7 0H7v9h3z'/>
+        </svg>
+    </button>
+    
+    <div class="image-widget" id="image-widget">
+        <div class="widget-header">
+            <h3 style="margin: 0; color: #333;">📷 Subir Imagen</h3>
+        </div>
+        
+        <div class="widget-content">
+            <!-- Sección de subida desde computadora -->
+            <div class="upload-section">
+                <h4>💻 Desde Computadora</h4>
+                <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+                    <p>📁 Haz clic o arrastra una imagen aquí</p>
+                    <small>Formatos soportados: JPG, PNG, GIF</small>
+                </div>
+                <input type="file" id="file-input" class="file-input" accept="image/*" onchange="handleFileSelect(event)">
+            </div>
+            
+            <!-- Sección QR para móvil -->
+            <div class="qr-section">
+                <h4>📱 Desde Teléfono</h4>
+                <p>Escanea este código QR:</p>
+                <div class="qr-code" id="qr-code"></div>
+                <small>Abre la cámara de tu teléfono y apunta al código QR</small>
+            </div>
+            
+            <!-- Preview de imagen -->
+            <div class="image-preview" id="image-preview" style="display: none;">
+                <h4>🖼️ Vista Previa</h4>
+                <img id="preview-img" class="preview-image" alt="Vista previa">
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="clearImage()">🗑️ Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        const validPasswords = ["Casanueva", "Fica", "Sepulveda", "Luna", "Correa"];
+
+        const password = prompt("Por favor, ingresa la contraseña:");
+        if (validPasswords.includes(password)) {
+            document.body.classList.remove("hidden");
+        } else {
+            alert("Contraseña incorrecta.");
+        }
+    </script>
+    
+    <script>
+        // Funciones del widget de imágenes
+        let isWidgetOpen = false;
+        
+        function toggleWidget() {
+            const widget = document.getElementById('image-widget');
+            const toggle = document.getElementById('widget-toggle');
+            
+            isWidgetOpen = !isWidgetOpen;
+            
+            if (isWidgetOpen) {
+                widget.classList.add('open');
+                toggle.classList.add('open');
+                toggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+                generateQR();
+            } else {
+                widget.classList.remove('open');
+                toggle.classList.remove('open');
+                toggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor"><path d="M3 9.4c0-2.24 0-3.36.436-4.216a4 4 0 0 1 1.748-1.748C6.04 3 7.16 3 9.4 3h5.2c2.24 0 3.36 0 4.216.436a4 4 0 0 1 1.748 1.748C21 6.04 21 7.16 21 9.4v5.2c0 2.24 0 3.36-.436 4.216a4 4 0 0 1-1.748 1.748C17.96 21 16.84 21 14.6 21H9.4c-2.24 0-3.36 0-4.216-.436a4 4 0 0 1-1.748-1.748C3 17.96 3 16.84 3 14.6z"/><path d="M17 7h-3v5h3zm-7 0H7v9h3z"/></svg>';
+            }
+        }
+        
+        function generateQR() {
+            // Generar URL para subir imagen desde móvil
+            const uploadUrl = window.location.origin + window.location.pathname + '#upload';
+            
+            // Crear código QR usando una API pública
+            const qrCodeContainer = document.getElementById('qr-code');
+            qrCodeContainer.innerHTML = `
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(uploadUrl)}" 
+                     alt="Código QR" style="border: 1px solid #ddd; border-radius: 8px;">
+            `;
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    displayImage(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function displayImage(imageSrc) {
+            const preview = document.getElementById('image-preview');
+            const img = document.getElementById('preview-img');
+            
+            img.src = imageSrc;
+            preview.style.display = 'block';
+            
+            // Scroll hacia la imagen
+            preview.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function clearImage() {
+            const preview = document.getElementById('image-preview');
+            const img = document.getElementById('preview-img');
+            const fileInput = document.getElementById('file-input');
+            
+            img.src = '';
+            preview.style.display = 'none';
+            fileInput.value = '';
+        }
+        
+        // Drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0 && files[0].type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        displayImage(e.target.result);
+                    };
+                    reader.readAsDataURL(files[0]);
+                }
+            });
+            
+            // Detectar si se accede desde móvil via QR
+            if (window.location.hash === '#upload') {
+                // Simular apertura del widget para móviles
+                setTimeout(() => {
+                    if (!isWidgetOpen) {
+                        toggleWidget();
+                    }
+                }, 500);
+            }
+        });
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>
