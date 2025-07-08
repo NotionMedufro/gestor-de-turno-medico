@@ -256,7 +256,13 @@ class IngresoControlManager {
 
     // Crear contenido para bloque vacío
     createEmptyContent(blockNum, contentArea) {
-        contentArea.innerHTML = '';
+        contentArea.innerHTML = `
+            <div class="empty-state">
+                <input type="text" id="nota-${blockNum}" name="nota" class="form-input compact-input" placeholder="Dx o Nota importante">
+            </div>
+        `;
+        
+        this.setupFormListeners(blockNum, contentArea);
     }
 
     // Crear contenido para cuando no hay nada seleccionado
