@@ -2,8 +2,8 @@
 class IngresoControlManager {
     constructor() {
         this.towers = {
-            'tower-a': { name: 'Torre Nueva A', rooms: 18, beds: 3 },
-            'tower-b': { name: 'Torre Nueva B', rooms: 18, beds: 3 },
+            'tower-a': { name: 'Torre Nueva B', rooms: 12, beds: 3, startRoom: 501 },
+            'tower-b': { name: 'Torre Nueva A', rooms: 17, beds: 3, startRoom: 513 },
             'tower-ep': { name: 'EP', rooms: 5, beds: 4, startRoom: 595 }
         };
         this.allBlocks = [];
@@ -47,7 +47,7 @@ class IngresoControlManager {
                     const blockHTML = `
                         <div class="block-container" id="container-${blockId}" data-type="empty" data-tower="${towerId}" data-room="${roomNumber}" data-bed="${bed}">
                             <div class="block-header">
-                                <h3>R${roomNumber}-C${bed}</h3>
+                                <h3>${roomNumber}-${bed}</h3>
                                 <span class="save-indicator" id="indicator-${blockId}">💾</span>
                             </div>
                             <div class="block-content" id="block-${blockId}">
