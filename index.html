@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Bloques Editables</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📝 Página de Bloques Editables</h1>
+            <p>Escribe en cualquier bloque - tu contenido se guarda automáticamente</p>
+            <div class="controls">
+                <button id="clearAll" class="clear-btn">🗑️ Limpiar Todo</button>
+                <button id="exportData" class="export-btn">📥 Exportar</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+                <button id="importData" class="import-btn">📤 Importar</button>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="blocks-grid">
+                <div class="block-container">
+                    <div class="block-header">
+                        <h3>Bloque 1</h3>
+                        <span class="save-indicator" id="indicator-1">💾</span>
+                    </div>
+                    <div 
+                        class="editable-block" 
+                        id="block-1" 
+                        contenteditable="true" 
+                        data-placeholder="Escribe aquí tu contenido para el bloque 1..."
+                    ></div>
+                </div>
+
+                <div class="block-container">
+                    <div class="block-header">
+                        <h3>Bloque 2</h3>
+                        <span class="save-indicator" id="indicator-2">💾</span>
+                    </div>
+                    <div 
+                        class="editable-block" 
+                        id="block-2" 
+                        contenteditable="true" 
+                        data-placeholder="Escribe aquí tu contenido para el bloque 2..."
+                    ></div>
+                </div>
+
+                <div class="block-container">
+                    <div class="block-header">
+                        <h3>Bloque 3</h3>
+                        <span class="save-indicator" id="indicator-3">💾</span>
+                    </div>
+                    <div 
+                        class="editable-block" 
+                        id="block-3" 
+                        contenteditable="true" 
+                        data-placeholder="Escribe aquí tu contenido para el bloque 3..."
+                    ></div>
+                </div>
+
+                <div class="block-container">
+                    <div class="block-header">
+                        <h3>Bloque 4</h3>
+                        <span class="save-indicator" id="indicator-4">💾</span>
+                    </div>
+                    <div 
+                        class="editable-block" 
+                        id="block-4" 
+                        contenteditable="true" 
+                        data-placeholder="Escribe aquí tu contenido para el bloque 4..."
+                    ></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>💡 Tu contenido se guarda automáticamente mientras escribes</p>
+            <p>🔒 Los datos se almacenan localmente en tu navegador</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
