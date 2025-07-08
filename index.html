@@ -298,6 +298,14 @@
         </div>
         
         <div class="widget-content">
+            <!-- Preview de imagen -->
+            <div class="image-preview" id="image-preview" style="display: none;">
+                <img id="preview-img" class="preview-image" alt="Vista previa">
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="clearImage()">🗑️ Eliminar</button>
+                </div>
+            </div>
+            
             <!-- Sección de subida desde computadora -->
             <div class="upload-section">
                 <h4>💻 Desde Computadora</h4>
@@ -314,15 +322,6 @@
                 <p>Escanea este código QR:</p>
                 <div class="qr-code" id="qr-code"></div>
                 <small>Abre la cámara de tu teléfono y apunta al código QR</small>
-            </div>
-            
-            <!-- Preview de imagen -->
-            <div class="image-preview" id="image-preview" style="display: none;">
-                <h4>🖼️ Vista Previa</h4>
-                <img id="preview-img" class="preview-image" alt="Vista previa">
-                <div style="margin-top: 15px;">
-                    <button class="btn btn-secondary" onclick="clearImage()">🗑️ Eliminar</button>
-                </div>
             </div>
         </div>
     </div>
