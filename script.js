@@ -1134,6 +1134,16 @@ class IngresoControlManager {
     // Manejar actualizaciones remotas de Firebase
     handleRemoteUpdate(blockId, data) {
         console.log(`🔄 Actualizando ${blockId} desde cambio remoto`);
+        console.log('📊 Datos recibidos:', data);
+        
+        // Verificar que el bloque existe en el DOM
+        const container = document.getElementById(`container-${blockId}`);
+        if (!container) {
+            console.error(`❌ Contenedor no encontrado para ${blockId}`);
+            return;
+        }
+        
+        console.log('✅ Contenedor encontrado, restaurando estado...');
         
         // Restaurar estado del bloque con los nuevos datos
         this.restoreBlockState(blockId, data);
@@ -1144,6 +1154,8 @@ class IngresoControlManager {
         
         // Mostrar indicador visual de sincronización
         this.showSyncIndicator(blockId);
+        
+        console.log(`✅ Actualización remota completada para ${blockId}`);
     }
     
     // Mostrar indicador de sincronización

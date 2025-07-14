@@ -87,18 +87,29 @@ class FirebaseSyncService {
 
     // Configurar listeners en tiempo real
     setupRealtimeListeners() {
-        if (!this.database) return;
+        if (!this.database) {
+            console.error('❌ No se pueden configurar listeners: database no disponible');
+            return;
+        }
 
         const blocksRef = this.database.ref('blocks');
+        console.log('🔄 Configurando listeners en:', blocksRef.toString());
         
         // Listener para cambios en tiempo real
         blocksRef.on('child_changed', (snapshot) => {
             const blockId = snapshot.key;
             const data = snapshot.val();
             
+            console.log('📡 Cambio detectado en Firebase:', blockId, data);
+            console.log('🆔 Mi cliente ID:', this.getClientId());
+            console.log('🆔 Cambio hecho por:', data?.lastModifiedBy);
+            
             // Solo actualizar si el cambio no vino de este cliente
             if (data && data.lastModifiedBy !== this.getClientId()) {
+                console.log('✅ Aplicando cambio remoto');
                 this.handleRemoteChange(blockId, data);
+            } else {
+                console.log('⏭️ Ignorando cambio propio');
             }
         });
 
@@ -107,24 +118,39 @@ class FirebaseSyncService {
             const blockId = snapshot.key;
             const data = snapshot.val();
             
+            console.log('🆕 Nuevo bloque detectado:', blockId);
+            
             if (data && data.lastModifiedBy !== this.getClientId()) {
+                console.log('✅ Aplicando nuevo bloque remoto');
                 this.handleRemoteChange(blockId, data);
             }
         });
 
-        console.log("👂 Listeners de tiempo real configurados");
+        // Listener para errores
+        blocksRef.on('error', (error) => {
+            console.error('❌ Error en listener de Firebase:', error);
+        });
+
+        console.log('👂 Listeners de tiempo real configurados correctamente');
     }
 
     // Manejar cambios remotos
     handleRemoteChange(blockId, data) {
         console.log(`🔄 Cambio remoto detectado en ${blockId}`);
+        console.log('📊 Datos del cambio:', data);
         
         // Actualizar cache local
         this.localCache[blockId] = data;
         
         // Notificar a la aplicación
         if (window.ingresoManager && this.isInitialized) {
+            console.log('✅ Notificando a ingresoManager');
             window.ingresoManager.handleRemoteUpdate(blockId, data);
+        } else {
+            console.error('❌ No se puede notificar cambio:', {
+                ingresoManager: !!window.ingresoManager,
+                isInitialized: this.isInitialized
+            });
         }
     }
 
@@ -144,6 +170,12 @@ class FirebaseSyncService {
                 await this.saveToFirebase(blockId, enrichedData);
             } catch (error) {
                 console.error("❌ Error guardando en Firebase:", error);
+                console.error("📋 Detalles del error:", {
+                    code: error.code,
+                    message: error.message,
+                    blockId: blockId,
+                    dataSize: JSON.stringify(data).length
+                });
                 // Agregar a cola de reintentos
                 this.retryQueue.push({ blockId, data: enrichedData });
                 // Fallback a localStorage
@@ -160,7 +192,10 @@ class FirebaseSyncService {
     async saveToFirebase(blockId, data) {
         if (!this.database) throw new Error("Database no disponible");
         
-        await this.database.ref(`blocks/${blockId}`).set(data);
+        // Importar funciones necesarias para la nueva API
+        const { ref, set } = await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js');
+        
+        await set(ref(this.database, `blocks/${blockId}`), data);
         
         // Remover de localStorage una vez guardado en Firebase
         localStorage.removeItem(`block-${blockId}-data`);
@@ -281,6 +316,20 @@ class FirebaseSyncService {
             initialized: this.isInitialized,
             retryQueueLength: this.retryQueue.length
         };
+    }
+    
+    // Limpiar cola de reintentos (para debug)
+    clearRetryQueue() {
+        console.log(`🗑️ Limpiando ${this.retryQueue.length} elementos de la cola`);
+        this.retryQueue = [];
+    }
+    
+    // Mostrar errores de la cola
+    showRetryQueueErrors() {
+        console.log(`📋 Cola de reintentos (${this.retryQueue.length} elementos):`);
+        this.retryQueue.forEach((item, index) => {
+            console.log(`${index + 1}. ${item.blockId}:`, item.data);
+        });
     }
 }
 
