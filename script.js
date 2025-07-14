@@ -15,9 +15,9 @@ class IngresoControlManager {
         this.init();
     }
 
-    init() {
+    async init() {
         this.generateTowers();
-        this.loadSavedContent();
+        await this.loadSavedContent();
         this.setupEventListeners();
         this.setupControlButtons();
         this.setupFilterListeners();
@@ -81,18 +81,34 @@ class IngresoControlManager {
         });
     }
 
-    // Cargar contenido guardado desde localStorage
-    loadSavedContent() {
-        this.allBlocks.forEach(blockId => {
-            const savedData = localStorage.getItem(`block-${blockId}-data`);
-            if (savedData) {
-                try {
-                    const data = JSON.parse(savedData);
-                    this.restoreBlockState(blockId, data);
-                } catch (error) {
-                    console.error(`Error loading block ${blockId}:`, error);
+    // Cargar contenido guardado desde Firebase
+    async loadSavedContent() {
+        // Esperar a que Firebase esté disponible
+        await this.waitForFirebaseSync();
+        
+        for (const blockId of this.allBlocks) {
+            try {
+                const savedData = await window.firebaseSync.getBlockData(blockId);
+                if (savedData) {
+                    this.restoreBlockState(blockId, savedData);
                 }
+            } catch (error) {
+                console.error(`Error loading block ${blockId}:`, error);
             }
+        }
+    }
+    
+    // Esperar a que Firebase Sync esté disponible
+    waitForFirebaseSync() {
+        return new Promise((resolve) => {
+            const check = () => {
+                if (window.firebaseSync && window.firebaseSync.isInitialized) {
+                    resolve();
+                } else {
+                    setTimeout(check, 100);
+                }
+            };
+            check();
         });
     }
 
@@ -443,7 +459,7 @@ class IngresoControlManager {
     }
 
     // Guardar datos de un bloque
-    saveBlockData(blockNum) {
+    async saveBlockData(blockNum) {
         const container = document.getElementById(`container-${blockNum}`);
         const type = container.getAttribute('data-type');
         const contentArea = document.getElementById(`content-${blockNum}`);
@@ -455,7 +471,7 @@ class IngresoControlManager {
         const data = {
             type: realType,
             formData: {},
-            encargado: this.getBlockData(blockNum).encargado || null
+            encargado: await this.getBlockDataAsync(blockNum).then(d => d?.encargado || null)
         };
         
         // Recopilar datos del formulario si existe
@@ -472,7 +488,14 @@ class IngresoControlManager {
             }
         }
         
-        localStorage.setItem(`block-${blockNum}-data`, JSON.stringify(data));
+        // Usar Firebase en lugar de localStorage
+        if (window.firebaseSync) {
+            await window.firebaseSync.saveBlockData(blockNum, data);
+        } else {
+            // Fallback a localStorage si Firebase no está disponible
+            localStorage.setItem(`block-${blockNum}-data`, JSON.stringify(data));
+        }
+        
         this.hideSaveIndicator(blockNum);
     }
 
@@ -510,7 +533,13 @@ class IngresoControlManager {
     }
 
     // Limpiar todos los bloques
-    clearAllBlocks() {
+    async clearAllBlocks() {
+        // Limpiar de Firebase
+        if (window.firebaseSync) {
+            await window.firebaseSync.clearAllData();
+        }
+        
+        // Limpiar localStorage también
         this.allBlocks.forEach(blockId => {
             localStorage.removeItem(`block-${blockId}-data`);
             // Desmarcar todos los checkboxes
@@ -1053,15 +1082,20 @@ class IngresoControlManager {
     }
     
     // Establecer encargado para un bloque
-    setEncargado(blockId, encargado) {
+    async setEncargado(blockId, encargado) {
         // Obtener datos actuales del bloque
-        const currentData = this.getBlockData(blockId);
+        const currentData = await this.getBlockDataAsync(blockId);
         
         // Actualizar solo el campo encargado
         currentData.encargado = encargado;
         
-        // Guardar los datos actualizados
-        localStorage.setItem(`block-${blockId}-data`, JSON.stringify(currentData));
+        // Guardar los datos actualizados en Firebase
+        if (window.firebaseSync) {
+            await window.firebaseSync.saveBlockData(blockId, currentData);
+        } else {
+            // Fallback a localStorage
+            localStorage.setItem(`block-${blockId}-data`, JSON.stringify(currentData));
+        }
         
         // Actualizar el selector visual
         this.updateEncargadoSelector(blockId);
@@ -1069,8 +1103,9 @@ class IngresoControlManager {
         console.log(`Encargado ${encargado} asignado a ${blockId}`);
     }
     
-    // Obtener datos de un bloque
+    // Obtener datos de un bloque (síncrono - para compatibilidad)
     getBlockData(blockId) {
+        // Para compatibilidad, intentar obtener de localStorage primero
         const saved = localStorage.getItem(`block-${blockId}-data`);
         if (saved) {
             try {
@@ -1080,6 +1115,53 @@ class IngresoControlManager {
             }
         }
         return { encargado: null };
+    }
+    
+    // Obtener datos de un bloque (asíncrono - con Firebase)
+    async getBlockDataAsync(blockId) {
+        if (window.firebaseSync) {
+            try {
+                return await window.firebaseSync.getBlockData(blockId) || { encargado: null };
+            } catch (error) {
+                console.error(`Error loading block ${blockId} from Firebase:`, error);
+            }
+        }
+        
+        // Fallback a localStorage
+        return this.getBlockData(blockId);
+    }
+    
+    // Manejar actualizaciones remotas de Firebase
+    handleRemoteUpdate(blockId, data) {
+        console.log(`🔄 Actualizando ${blockId} desde cambio remoto`);
+        
+        // Restaurar estado del bloque con los nuevos datos
+        this.restoreBlockState(blockId, data);
+        
+        // Actualizar contadores y filtros
+        this.updateFilterCounts();
+        this.updateTowerSummaries();
+        
+        // Mostrar indicador visual de sincronización
+        this.showSyncIndicator(blockId);
+    }
+    
+    // Mostrar indicador de sincronización
+    showSyncIndicator(blockNum) {
+        const indicator = document.getElementById(`indicator-${blockNum}`);
+        if (indicator) {
+            indicator.textContent = '🔄';
+            indicator.style.opacity = '1';
+            indicator.style.color = '#007bff';
+            
+            setTimeout(() => {
+                indicator.textContent = '✅';
+                indicator.style.color = '#28a745';
+                setTimeout(() => {
+                    indicator.style.opacity = '0.5';
+                }, 1000);
+            }, 500);
+        }
     }
     
     // Cerrar todos los dropdowns

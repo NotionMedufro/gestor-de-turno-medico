@@ -172,6 +172,57 @@
         .btn-secondary:hover {
             background: #545b62;
         }
+        
+        /* Estilos para indicador de estado Firebase */
+        .firebase-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 12px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .firebase-status.connected {
+            background: rgba(40, 167, 69, 0.1);
+            border-color: rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+        
+        .firebase-status.offline {
+            background: rgba(220, 53, 69, 0.1);
+            border-color: rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+        
+        .firebase-status.connecting {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+        
+        .status-indicator {
+            font-size: 14px;
+            animation: pulse 2s infinite;
+        }
+        
+        .firebase-status.connected .status-indicator {
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .status-text {
+            font-weight: 500;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="hidden">
@@ -244,6 +295,10 @@
             </div>
             
             <div class="controls">
+                <div class="firebase-status" id="firebase-status" title="Estado de sincronización">
+                    <span class="status-indicator" id="status-indicator">⏳</span>
+                    <span class="status-text" id="status-text">Conectando...</span>
+                </div>
                 <button id="clearAll" class="clear-btn-minimal">🗑️</button>
             </div>
         </div>
@@ -436,6 +491,16 @@
             }
         });
     </script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Firebase Configuration -->
+    <script src="firebase-config.js"></script>
+    
+    <!-- Firebase Sync Service -->
+    <script src="firebase-sync.js"></script>
     
     <script src="script.js"></script>
 </body>
