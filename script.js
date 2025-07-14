@@ -90,7 +90,7 @@ class IngresoControlManager {
             try {
                 const savedData = await window.firebaseSync.getBlockData(blockId);
                 if (savedData) {
-                    this.restoreBlockState(blockId, savedData);
+                    this.restoreBlockState(blockId, savedData, true); // skipSave = true
                 }
             } catch (error) {
                 console.error(`Error loading block ${blockId}:`, error);
@@ -113,7 +113,7 @@ class IngresoControlManager {
     }
 
     // Restaurar el estado de un bloque
-    restoreBlockState(blockNum, data) {
+    restoreBlockState(blockNum, data, skipSave = false) {
         const container = document.getElementById(`container-${blockNum}`);
         
         // Primero desmarcar todos los checkboxes
@@ -123,13 +123,13 @@ class IngresoControlManager {
         // Manejar el tipo de datos
         if (data.type === 'none') {
             // No marcar ninguna checkbox y usar estado 'none'
-            this.handleTypeChange(blockNum, 'none');
+            this.handleTypeChangeWithoutSave(blockNum, 'none', skipSave);
         } else {
             // Marcar solo el tipo correspondiente
             const checkbox = document.querySelector(`input[name="type-${blockNum}"][value="${data.type}"]`);
             if (checkbox) {
                 checkbox.checked = true;
-                this.handleTypeChange(blockNum, data.type);
+                this.handleTypeChangeWithoutSave(blockNum, data.type, skipSave);
                 
                 // Restaurar datos específicos del formulario
                 if (data.formData) {
@@ -234,6 +234,11 @@ class IngresoControlManager {
 
     // Manejar cambio de tipo de bloque
     handleTypeChange(blockNum, type) {
+        this.handleTypeChangeWithoutSave(blockNum, type, false);
+    }
+    
+    // Manejar cambio de tipo de bloque sin guardar
+    handleTypeChangeWithoutSave(blockNum, type, skipSave = false) {
         const container = document.getElementById(`container-${blockNum}`);
         const contentArea = document.getElementById(`content-${blockNum}`);
         
@@ -265,9 +270,11 @@ class IngresoControlManager {
         // Actualizar contadores de filtros
         this.updateFilterCounts();
         
-        // Guardar el cambio
-        this.saveBlockData(blockNum);
-        this.showSaveIndicator(blockNum);
+        // Guardar el cambio solo si no se debe saltar
+        if (!skipSave) {
+            this.saveBlockData(blockNum);
+            this.showSaveIndicator(blockNum);
+        }
     }
 
     // Crear contenido para bloque vacío
@@ -1145,8 +1152,8 @@ class IngresoControlManager {
         
         console.log('✅ Contenedor encontrado, restaurando estado...');
         
-        // Restaurar estado del bloque con los nuevos datos
-        this.restoreBlockState(blockId, data);
+        // Restaurar estado del bloque con los nuevos datos (sin guardar para evitar loop)
+        this.restoreBlockState(blockId, data, true); // skipSave = true
         
         // Actualizar contadores y filtros
         this.updateFilterCounts();
@@ -1419,6 +1426,8 @@ let ingresoManager;
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     ingresoManager = new IngresoControlManager();
+    // Registrar globalmente para Firebase
+    window.ingresoManager = ingresoManager;
 
     // Guardar antes de cerrar
     window.addEventListener('beforeunload', () => {
